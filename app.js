@@ -1,7 +1,7 @@
 //variables
 const cartBtn = document.querySelector('.cart-btn');
-const closeCartBtn = document.querySelector('close-cart');
-const clearCartBtn = document.querySelector('clear-cart');
+const closeCartBtn = document.querySelector('.close-cart');
+const clearCartBtn = document.querySelector('.clear-cart');
 const cartDOM = document.querySelector('.cart');
 const cartOverlay = document.querySelector('.cart-overlay');
 const cartItems = document.querySelector('.cart-items');
@@ -75,14 +75,12 @@ class UI{
                     let cartItem = {...Storage.getProducts(id), amount:1}
                     //add product to the cart
                     cart.push(cartItem);
-                    console.log(cartItem);
-                    console.log(cart);
                     // save cart to local Storage
                     Storage.saveCart(cart)
                     //set card values
                     this.setCartValues(cart);
                     //display  cart item
-                    this.displayCartItem(cart);
+                    this.addCartItem(cartItem);
                     //show the cart
                     this.showCart();
                 })
@@ -99,32 +97,44 @@ class UI{
             cartItems.innerHTML = itemsTotal;
         })
     }
-    displayCartItem(cart){
-        let cartItem = "";
-        cart.map((item) => {
-            cartItem += `
-            <!--card item-->
-            <div class="cart-item">
-            <img src=${item.image} alt="product"/>
+    addCartItem(item){
+        console.log(item)
+        const div = document.createElement("div");
+        div.classList.add('cart-item');
+        div.innerHTML = `<img src=${item.image} alt="product"/>
                 <div>  
                     <h4>${item.title}</h4>
                     <h5>$ ${item.price}</h5>
-                    <div class="remove-item">remove</div>
+                    <div class="remove-item" data-id = ${item.id} >remove</div>
                 </div>
                 <div>  
-                    <i class="fas fa-chevron-up"></i>
+                    <i class="fas fa-chevron-up" data-id = ${item.id} ></i>
                     <p class="item-amount">${item.amount}</p>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-            </div>          
-             <!--end of card item-->
-            ` 
-        })
-        cartContent.innerHTML = cartItem;
+                    <i class="fas fa-chevron-down" data-id = ${item.id} ></i>
+                </div>        
+        `        
+        cartContent.appendChild(div);
     }
      showCart(){
-        cartOverlay.style.visibility = 'visible';
-        cartDOM.style.transform = 'translate(0%)';
+         cartOverlay.classList.add('transparentBcg');
+         cartDOM.classList.add('showCart');
+        //cartOverlay.style.visibility = 'visible';
+        //cartDOM.style.transform = 'translate(0%)';
+    }
+    setupApp(){
+        cart = Storage.getCart();
+        this.setCartValues(cart);
+        this.populateCart(cart);
+        cartBtn.addEventListener('click', this.showCart);
+        closeCartBtn.addEventListener('click', this.closeCart);
+    }
+    populateCart(cart){
+        cart.forEach((item) => this.addCartItem(item))
+
+    }
+    closeCart(){
+        cartOverlay.classList.remove('transparentBcg');
+        cartDOM.classList.remove('showCart');
     }
 }
 //local storage
@@ -143,12 +153,15 @@ class Storage{
     static saveCart(cart){
         localStorage.setItem("cart", JSON.stringify(cart));
     }
+    static getCart(){
+       return localStorage.getItem("cart")?JSON.parse(localStorage.getItem("cart")): []
+    }
 }
 
 document.addEventListener("DOMContentLoaded",() => {
     const ui = new UI();
     const products = new Products();
-
+    ui.setupApp();
     //getting all Products
     products.getProducts().then((products) => {
         ui.displayProducts(products)
