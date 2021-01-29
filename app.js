@@ -165,15 +165,16 @@ class UI{
                //using find method
                let tempItem = cart.find(item => item.id === id );
                tempItem.amount--;
-               chevronDown.previousElementSibling.innerHTML = tempItem.amount
-               /*cart.forEach((item) => {
-                   if(item.id === id){
-                       item.amount--;
-                       chevronDown.previousElementSibling.innerHTML = item.amount;
-                   }
-               })*/
-               Storage.saveCart(cart);
-               this.setCartValues(cart)
+               if(tempItem.amount > 0){
+                    Storage.saveCart(cart);
+                    this.setCartValues(cart);
+                    chevronDown.previousElementSibling.innerHTML = tempItem.amount;
+               }else{
+                    cartContent.removeChild(chevronDown.parentElement.parentElement);
+                    this.removeCartItem(id);
+               }
+               
+               
            }
         })
     }
