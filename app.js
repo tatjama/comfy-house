@@ -143,7 +143,35 @@ class UI{
                 let removeItem = event.target;
                 let id = removeItem.dataset.id;
                 cartContent.removeChild(removeItem.parentElement.parentElement);                
-                this.removeCartItem(id);                
+                this.removeCartItem(id);              
+           }
+           if(event.target.classList.contains('fa-chevron-up')){
+               let chevronUp = event.target;
+               let id = chevronUp.dataset.id;
+               console.log(cart)
+               cart.forEach((item) => {
+                   if(item.id === id){
+                    item.amount++   
+                    let itemAmount = document.querySelector('.item-amount');
+                    itemAmount.innerHTML = item.amount;    
+                   }
+               })
+               Storage.saveCart(cart);
+               this.setCartValues(cart);
+               
+           }
+           if(event.target.classList.contains('fa-chevron-down')){
+               let chevronDown = event.target;
+               let id = chevronDown.dataset.id;
+               cart.forEach((item) => {
+                   if(item.id === id){
+                       item.amount--;
+                       let itemAmount = document.querySelector('.item-amount');
+                       itemAmount.innerHTML = item.amount;
+                   }
+               })
+               Storage.saveCart(cart);
+               this.setCartValues(cart)
            }
         })
     }
