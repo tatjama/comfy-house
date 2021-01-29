@@ -134,8 +134,18 @@ class UI{
         cartDOM.classList.remove('showCart');
     }
     cartLogic(){
-        //clear all cart items
+        //clear all cart button
         clearCartBtn.addEventListener('click', () => { this.clearCart()})
+        //cart functionality
+        cartContent.addEventListener('click', (event) => {
+            //remove-item click
+           if(event.target.classList.contains('remove-item')){
+                let removeItem = event.target;
+                let id = removeItem.dataset.id;
+                cartContent.removeChild(removeItem.parentElement.parentElement);                
+                this.removeCartItem(id);                
+           }
+        })
     }
     clearCart(){
         let cartItems = cart.map(item =>item.id);
