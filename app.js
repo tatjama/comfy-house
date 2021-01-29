@@ -148,28 +148,30 @@ class UI{
            if(event.target.classList.contains('fa-chevron-up')){
                let chevronUp = event.target;
                let id = chevronUp.dataset.id;
-               console.log(cart)
+               //using forEach method
                cart.forEach((item) => {
                    if(item.id === id){
                     item.amount++   
-                    let itemAmount = document.querySelector('.item-amount');
-                    itemAmount.innerHTML = item.amount;    
+                    chevronUp.nextElementSibling.innerHTML = item.amount;    
                    }
                })
                Storage.saveCart(cart);
                this.setCartValues(cart);
                
            }
-           if(event.target.classList.contains('fa-chevron-down')){
+           if(event.target.classList.contains('fa-chevron-down')){               
                let chevronDown = event.target;
                let id = chevronDown.dataset.id;
-               cart.forEach((item) => {
+               //using find method
+               let tempItem = cart.find(item => item.id === id );
+               tempItem.amount--;
+               chevronDown.previousElementSibling.innerHTML = tempItem.amount
+               /*cart.forEach((item) => {
                    if(item.id === id){
                        item.amount--;
-                       let itemAmount = document.querySelector('.item-amount');
-                       itemAmount.innerHTML = item.amount;
+                       chevronDown.previousElementSibling.innerHTML = item.amount;
                    }
-               })
+               })*/
                Storage.saveCart(cart);
                this.setCartValues(cart)
            }
